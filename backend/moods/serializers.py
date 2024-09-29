@@ -4,7 +4,7 @@ from rest_framework import serializers
 from moods.models import MoodEntry
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserPrivateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "email", "password"]

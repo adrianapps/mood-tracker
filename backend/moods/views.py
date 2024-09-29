@@ -3,16 +3,20 @@ from rest_framework import generics
 from rest_framework import permissions
 from moods.models import MoodEntry
 from moods.permissions import IsMoodEntryOwner
-from .serializers import MoodEntrySerializer, UserPublicSerializer, UserSerializer
+from .serializers import (
+    MoodEntrySerializer,
+    UserPublicSerializer,
+    UserPrivateSerializer,
+)
 
 
-class UserCreate(generics.CreateAPIView):
+class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
 
     def get_serializer_class(self):
         if self.request.method == "POST":
-            return UserSerializer
-        return UserPublicSerializer 
+            return UserPrivateSerializer
+        return UserPublicSerializer
 
     def get_permissions(self):
         if self.request.method == "POST":
@@ -22,7 +26,7 @@ class UserCreate(generics.CreateAPIView):
 
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserPublicSerializer 
+    serializer_class = UserPublicSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_url_kwarg = "user_id"
 

@@ -1,10 +1,10 @@
 from django.urls import path
 
-from moods.views import MoodEntryDetail, MoodEntryList, UserCreate, UserDetail
+from moods.views import MoodEntryDetail, MoodEntryList, UserList, UserDetail
 
 
 urlpatterns = [
-    path("users/", UserCreate.as_view(), name="register"),
+    path("users/", UserList.as_view(), name="user-list"),
     path("users/<int:user_id>/", UserDetail.as_view(), name="user-detail"),
     path("users/<int:user_id>/moods/", MoodEntryList.as_view(), name="mood-entry-list"),
     path(
