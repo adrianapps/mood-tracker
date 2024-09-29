@@ -1,13 +1,17 @@
 from django.test import TestCase
 
 from .factories import MoodEntryFactory, UserFactory
-from moods.serializers import MoodEntrySerializer, UserSerializer
+from moods.serializers import (
+    MoodEntrySerializer,
+    UserPrivateSerializer,
+    UserPublicSerializer,
+)
 
 
-class UserSerializerTest(TestCase):
+class UserPrivateSerializerTest(TestCase):
     def setUp(self):
         self.user = UserFactory()
-        self.serializer = UserSerializer(instance=self.user)
+        self.serializer = UserPrivateSerializer(instance=self.user)
         self.data = self.serializer.data
 
     def test_contains_expected_fields(self):
@@ -21,6 +25,22 @@ class UserSerializerTest(TestCase):
 
     def test_email_field_content(self):
         self.assertEqual(self.data["email"], self.user.email)
+
+
+class UserPublicSerializerTest(TestCase):
+    def setUp(self):
+        self.user = UserFactory()
+        self.serializer = UserPublicSerializer(instance=self.user)
+        self.data = self.serializer.data
+
+    def test_contains_expected_fields(self):
+        self.assertEqual(set(self.data.keys()), {"id", "username"})
+
+    def test_id_field_content(self):
+        self.assertEqual(self.data["id"], self.user.id)
+
+    def test_username_field_content(self):
+        self.assertEqual(self.data["username"], self.user.username)
 
 
 class MoodEntrySerializerTest(TestCase):
