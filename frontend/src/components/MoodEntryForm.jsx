@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import api from '../api';
 
 
-export default function MoodEntryForm({ userId }) {
-  const [mood, setMood] = useState(2);
+function MoodEntryForm({ userId }) {
+  const [mood, setMood] = useState(0);
   const [description, setDescription] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (userId) {
       try {
-        const response = await api.post(`/api/users/${userId}/moods/`, {
-          mood: mood,
-          description: description,
-        });
+        const response = await api.post(`/api/users/${userId}/moods/`, { user: userId, mood: mood, description: description });
         console.log('Mood entry created:', response.data);
-        setMood(2);
+        setMood(0);
         setDescription('');
       } catch (error) {
         console.error('Error creating mood entry:', error);
@@ -26,32 +22,51 @@ export default function MoodEntryForm({ userId }) {
     }
   };
 
+  const openModal = () => {
+    document.getElementById('my_modal_1').showModal();
+  };
+
+  const closeModal = () => {
+    document.getElementById('my_modal_1').close();
+  };
+
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-      <h2>Create Mood Entry</h2>
-      <StyledRating
-        name="highlight-selected-only"
-        value={mood}
-        IconContainerComponent={IconContainer}
-        getLabelText={(value) => customIcons[value].label}
-        highlightSelectedOnly
-        onChange={(event, newValue) => {
-          setMood(newValue);
-        }}
-      />
-      <TextField
-        fullWidth
-        label="Description"
-        multiline
-        rows={4}
-        variant="outlined"
-        value={description}
-        onChange={(event) => setDescription(event.target.value)}
-        sx={{ mt: 2 }}
-      />
-      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-        Submit
-      </Button>
-    </Box>
+    <>
+      {/* Open the modal using document.getElementById('my_modal_1').showModal() method */}
+      <button className="btn" onClick={openModal}>
+        Open Modal
+      </button>
+
+      <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+
+          <form onSubmit={handleSubmit}>
+            {/* Description text area */}
+            <textarea
+              className="textarea textarea-bordered"
+              placeholder="Bio"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}></textarea>
+            {/* Heart rating */}
+            <div className="rating gap-1">
+              <input type="radio" name="rating-3" value={-2} checked={mood === -2} onChange={() => setMood(-2)} className="mask mask-heart bg-red-400" />
+              <input type="radio" name="rating-3" value={-1} checked={mood === -1} onChange={() => setMood(-1)} className="mask mask-heart bg-orange-400" />
+              <input type="radio" name="rating-3" value={0} checked={mood === 0} onChange={() => setMood(0)} className="mask mask-heart bg-yellow-400" />
+              <input type="radio" name="rating-3" value={1} checked={mood === 1} onChange={() => setMood(1)} className="mask mask-heart bg-lime-400" />
+              <input type="radio" name="rating-3" value={2} checked={mood === 2} onChange={() => setMood(2)} className="mask mask-heart bg-green-400" />
+            </div>
+            <div className="modal-action">
+              {/* if there is a button in form, it will close the modal */}
+              <button type="submit" className="btn btn-primary">Save</button>
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn btn-secondary" onClick={closeModal}>Close</button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+    </>
   );
+
 }
+
+export default MoodEntryForm;

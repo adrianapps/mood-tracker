@@ -10,11 +10,11 @@ function Home() {
     return (
         <div>
             <Navbar userId={userId} />
+            <MoodEntryForm userId={userId} />
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <MoodEntry userId={userId} />
             </div>
         </div>
-        // return <MoodEntryForm userId={userId} />
     )
 }
 
