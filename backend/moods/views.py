@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework import permissions
+from django_filters import OrderingFilter
 from moods.models import MoodEntry
 from moods.permissions import IsMoodEntryOwner
 from .serializers import (
@@ -34,6 +35,8 @@ class UserDetail(generics.RetrieveAPIView):
 class MoodEntryList(generics.ListCreateAPIView):
     serializer_class = MoodEntrySerializer
     permission_classes = [permissions.IsAuthenticated, IsMoodEntryOwner]
+    filter_backends = [OrderingFilter()]
+    ordering_filters = ["date", "moods"]
 
     def get_queryset(self):
         queryset = MoodEntry.objects.select_related("user")
