@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../api";
 import MoodEntryForm from "./MoodEntryForm";
 
-function Navbar({ userId }) {
+function Navbar({ userId, handleAddMood }) {
   const [username, setUsername] = useState("");
   useEffect(() => {
     console.log("userId:", userId);
@@ -30,7 +30,7 @@ function Navbar({ userId }) {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <MoodEntryForm userId={userId} />
+            <MoodEntryForm userId={userId} handleAddMood={handleAddMood}/>
           </li>
           <li>
             <a>{username}</a>

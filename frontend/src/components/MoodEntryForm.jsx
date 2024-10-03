@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import api from "../api";
 
-function MoodEntryForm({ userId }) {
+function MoodEntryForm({ userId, handleAddMood }) {
   const [mood, setMood] = useState(0);
   const [description, setDescription] = useState("");
 
@@ -15,6 +15,7 @@ function MoodEntryForm({ userId }) {
           description: description,
         });
         console.log("Mood entry created:", response.data);
+        handleAddMood(response.data);
         setMood(0);
         setDescription("");
       } catch (error) {
@@ -25,18 +26,17 @@ function MoodEntryForm({ userId }) {
     }
   };
 
-  const openModal = () => {
-    document.getElementById("my_modal_1").showModal();
-  };
+  const openModal = () => {};
 
-  const closeModal = () => {
-    document.getElementById("my_modal_1").close();
-  };
+  const closeModal = () => {};
 
   return (
     <>
       {/* Open the modal using document.getElementById('my_modal_1').showModal() method */}
-      <button className="btn btn-primary" onClick={openModal}>
+      <button
+        className="btn btn-primary"
+        onClick={() => document.getElementById("my_modal_1").showModal()}
+      >
         Add Mood
       </button>
 
@@ -107,7 +107,7 @@ function MoodEntryForm({ userId }) {
               <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={closeModal}
+                onClick={() => document.getElementById("my_modal_1").close()}
               >
                 Close
               </button>

@@ -1,34 +1,12 @@
-import React, { useState, useEffect } from "react";
 import api from "../api";
 
-function MoodEntry({ userId }) {
-  const [moodEntries, setMoodEntries] = useState([]);
-
-  useEffect(() => {
-    console.log("userId:", userId);
-
-    if (userId) {
-      api
-        .get(`/api/users/${userId}/moods/`)
-        .then((res) => {
-          console.log("API Response:", res.data);
-          setMoodEntries(res.data);
-        })
-        .catch((err) => {
-          console.error("API Error:", err);
-        });
-    } else {
-      console.warn("No userId available");
-    }
-  }, [userId]);
+function MoodEntry({ userId, moodEntries, handleRemoveMood }) {
 
   const handleDelete = async (moodId) => {
     if (userId && moodId)
       try {
         await api.delete(`/api/users/${userId}/moods/${moodId}/`);
-        setMoodEntries((prevEntries) =>
-          prevEntries.filter((mood) => mood.id !== moodId)
-        );
+        handleRemoveMood(moodId)
       } catch (error) {
         console.log(`Error occured while deleting mood entry: ${error}`);
       }
