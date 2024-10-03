@@ -93,7 +93,7 @@ function Form({ route, method }) {
           onChange={(e) => setPassword(e.target.value)}
         />
       </label>
-      {loading && <LoadingIndicator />}
+      {loading && <span className="loading loading-spinner loading-lg"></span>}
       <button className="btn btn-primary" type="submit">
         {name}
       </button>
