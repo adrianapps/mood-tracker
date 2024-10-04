@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.utils import timezone
 from rest_framework import serializers
 
 from moods.models import MoodEntry
@@ -34,3 +35,11 @@ class MoodEntrySerializer(serializers.ModelSerializer):
 
     def get_mood_display(self, obj):
         return obj.get_mood_display()
+
+    def validate(self, data):
+        user = data.get("user")
+        date = data.get("date", timezone.now().date())
+        moods = MoodEntry.objects.filter(user=user, date=date)
+        if moods.exists():
+            raise serializers.ValidationError(f"Mood Entry for {date} already exists")
+        return data
