@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from rest_framework.serializers import ValidationError
 from .factories import MoodEntryFactory, UserFactory
 from moods.serializers import (
     MoodEntrySerializer,
@@ -45,7 +46,8 @@ class UserPublicSerializerTest(TestCase):
 
 class MoodEntrySerializerTest(TestCase):
     def setUp(self):
-        self.mood_entry = MoodEntryFactory()
+        self.user = UserFactory()
+        self.mood_entry = MoodEntryFactory(user=self.user)
         self.serializer = MoodEntrySerializer(instance=self.mood_entry)
         self.data = self.serializer.data
 
@@ -73,3 +75,17 @@ class MoodEntrySerializerTest(TestCase):
 
     def test_description_field_content(self):
         self.assertEqual(self.data["description"], self.mood_entry.description)
+
+    def test_validate(self):
+        mood_entry = MoodEntryFactory()
+        duplicate_data = {
+            "mood": mood_entry.mood,
+            "user": mood_entry.user.id,
+            "date": mood_entry.date.isoformat(),
+        }
+        serializer = MoodEntrySerializer(data=duplicate_data)
+        self.assertFalse(serializer.is_valid())
+
+        with self.assertRaises(ValidationError):
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
