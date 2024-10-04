@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 
 class MoodChoices(models.IntegerChoices):
@@ -13,8 +14,13 @@ class MoodChoices(models.IntegerChoices):
 class MoodEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="days")
     mood = models.IntegerField(choices=MoodChoices.choices)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(blank=True)
     description = models.TextField(blank=True)
 
     def __str__(self) -> str:
         return f"{self.user.username} on {self.date}: {self.get_mood_display()}"
+
+    def save(self, *args, **kwargs):
+        if self.date is None:
+            self.date = timezone.now().date()
+        super().save(*args, **kwargs)
