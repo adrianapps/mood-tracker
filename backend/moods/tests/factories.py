@@ -17,6 +17,7 @@ class MoodEntryFactory(DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     mood = factory.Iterator([choice[0] for choice in MoodChoices.choices])
     description = factory.Faker("text")
+    date = factory.Faker("date_this_decade")
 
     class Meta:
         model = MoodEntry
