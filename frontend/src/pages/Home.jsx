@@ -6,6 +6,10 @@ import Navbar from "../components/Navbar";
 function Home() {
   const userId = getUserIdFromToken();
   const [moodEntries, setMoodEntries] = useState([]);
+  const [sortCriteria, setSortCriteria] = useState({
+    key: "mood_display",
+    order: "asc",
+  });
 
   useEffect(() => {
     if (userId) {
@@ -30,6 +34,18 @@ function Home() {
     );
   };
 
+  const handleSort = (key) => {
+    const order =
+      sortCriteria.key === key && sortCriteria.order === "asc" ? "desc" : "asc";
+    const sortedEntries = [...moodEntries].sort((a, b) => {
+      if (a[key] < b[key]) return order === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+    setMoodEntries(sortedEntries);
+    setSortCriteria({ key, order });
+  };
+
   return (
     <div>
       <Navbar userId={userId} handleAddMood={handleAddMood} />
@@ -38,6 +54,7 @@ function Home() {
           userId={userId}
           moodEntries={moodEntries}
           handleRemoveMood={handleRemoveMood}
+          handleSort={handleSort}
         />
       </div>
     </div>

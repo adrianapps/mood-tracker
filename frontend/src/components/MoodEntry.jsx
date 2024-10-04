@@ -1,12 +1,11 @@
 import api from "../api";
 
-function MoodEntry({ userId, moodEntries, handleRemoveMood }) {
-
+function MoodEntry({ userId, moodEntries, handleRemoveMood, handleSort }) {
   const handleDelete = async (moodId) => {
     if (userId && moodId)
       try {
         await api.delete(`/api/users/${userId}/moods/${moodId}/`);
-        handleRemoveMood(moodId)
+        handleRemoveMood(moodId);
       } catch (error) {
         console.log(`Error occured while deleting mood entry: ${error}`);
       }
@@ -15,46 +14,52 @@ function MoodEntry({ userId, moodEntries, handleRemoveMood }) {
   return (
     <div>
       <h1 className="text-center">User Mood Entries</h1>
-      <ul>
-        {moodEntries.length > 0 ? (
-          moodEntries.map((mood, index) => (
-            <li key={index}>
-              <div className="overflow-x-auto">
-                <table className="table table-zebra">
-                  {/* head */}
-                  <thead>
-                    <tr>
-                      <th>Mood</th>
-                      <th>Date</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* row 1 */}
-                    <tr>
-                      <th>{mood.mood_display}</th>
-                      <th>{new Date(mood.date).toLocaleDateString()}</th>
-                      <td>
-                        {mood.description ? mood.description : "No description"}
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => handleDelete(mood.id)}
-                          className="btn btn-secondary"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </li>
-          ))
-        ) : (
-          <p>No mood entries found.</p>
-        )}
-      </ul>
+      {moodEntries.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="table table-zebra">
+            {/* head */}
+            <thead>
+              <tr>
+                <th
+                  onClick={() => handleSort("mood")}
+                  style={{ cursor: "pointer" }}
+                >
+                  Mood
+                </th>
+                <th
+                  onClick={() => handleSort("date")}
+                  style={{ cursor: "pointer" }}
+                >
+                  Date
+                </th>
+                <th>Description</th>
+                <th>Actions</th> 
+              </tr>
+            </thead>
+            <tbody>
+              {moodEntries.map((mood) => (
+                <tr key={mood.id}>
+                  <td>{mood.mood_display}</td>
+                  <td>{new Date(mood.date).toLocaleDateString()}</td>
+                  <td>
+                    {mood.description ? mood.description : "No description"}
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => handleDelete(mood.id)}
+                      className="btn btn-secondary"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p>No mood entries found.</p>
+      )}
     </div>
   );
 }
